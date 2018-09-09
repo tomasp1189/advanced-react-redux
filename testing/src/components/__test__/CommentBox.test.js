@@ -1,11 +1,16 @@
 import React from 'react';
 import { mount } from 'enzyme';
+import Root from 'Root';
 import CommentBox from 'components/CommentBox';
 
 let wrapped;
 
 beforeEach(() => {
-	wrapped = mount(<CommentBox />);
+	wrapped = mount(
+		<Root>
+			<CommentBox />
+		</Root>
+	);
 });
 
 afterEach(() => {
@@ -29,9 +34,7 @@ describe('The textarea', () => {
 	});
 
 	it('should empty the text area when form is submitted', () => {
-		expect(wrapped.find('textarea').prop('value')).toEqual(
-			'test comment'
-		);
+		expect(wrapped.find('textarea').prop('value')).toEqual('test comment');
 
 		wrapped.find('form').simulate('submit');
 		wrapped.update();
