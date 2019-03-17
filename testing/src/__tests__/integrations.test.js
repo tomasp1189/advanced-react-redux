@@ -1,8 +1,11 @@
 import React from 'react';
 import { mount } from 'enzyme';
+import { MemoryRouter } from 'react-router-dom';
 import moxios from 'moxios';
 import Root from 'Root';
 import App from 'components/App';
+
+let wrapped;
 
 beforeEach(() => {
 	moxios.install();
@@ -17,6 +20,13 @@ beforeEach(() => {
 			}
 		]
 	});
+	wrapped = mount(
+		<Root>
+			<MemoryRouter>
+				<App />
+			</MemoryRouter>
+		</Root>
+	);
 });
 
 afterEach(() => {
@@ -24,11 +34,12 @@ afterEach(() => {
 });
 
 it('should fetch a list of comments and display them succesfully', done => {
-	const wrapped = mount(
-		<Root>
-			<App />
-		</Root>
-	);
+	// we need to sign in first
+	wrapped.find('.sign-in').simulate('click');
+	// navigate to comment list
+	wrapped.find('a.nav-link-post').simulate('click');
+
+	//console.log(wrapped.find('a.nav-link-post').html());
 
 	wrapped.find('.fetch-comments').simulate('click');
 
