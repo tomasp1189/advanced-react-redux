@@ -21,12 +21,12 @@ class App extends Component {
 		return (
 			<ul>
 				<li>
-					<Link className="nav-link-home" to="/">
+					<Link id="nav-link-home" to="/">
 						Home
 					</Link>
 				</li>
 				<li>
-					<Link className="nav-link-post" to="/post">
+					<Link id="nav-link-post" to="/post">
 						Post A Comment
 					</Link>
 				</li>
@@ -38,10 +38,8 @@ class App extends Component {
 		return (
 			<div>
 				{this.renderHeader()}
-				<Switch>
-					<Route path="/post" component={CommentBox} />
-					<Route exact path="/" component={CommentList} />
-				</Switch>
+				<Route path="/post" component={CommentBox} />
+				<Route exact path="/" component={CommentList} />
 			</div>
 		);
 	}
