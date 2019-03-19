@@ -6,24 +6,37 @@ import App from 'components/App';
 import CommentBox from 'components/CommentBox';
 import CommentList from 'components/CommentList';
 
-const mountLoggedInWithRouter = routerIndex => {
+const mountLoggedInWithRouter = route => {
 	return mount(
-		<Root initialState={{ auth: true }}>
-			<MemoryRouter initialEntries={['/', '/post']} initialIndex={routerIndex}>
-				<App />
-			</MemoryRouter>
+		<Root
+			initialState={{
+				auth: true,
+				router: {
+					location: {
+						pathname: route,
+						search: '',
+						hash: '',
+						state: undefined,
+						key: 'st0b6u'
+					},
+					action: 'PUSH'
+				},
+				comments: []
+			}}
+		>
+			<App />
 		</Root>
 	);
 };
 
 it('should show a comment box', () => {
-	const wrapped = mountLoggedInWithRouter(1);
+	const wrapped = mountLoggedInWithRouter('/post');
 	wrapped.update();
 	expect(wrapped.find(CommentBox).length).toEqual(1);
 });
 
 it('should show a comment list', () => {
-	const wrapped = mountLoggedInWithRouter(0);
+	const wrapped = mountLoggedInWithRouter('/');
 	wrapped.find('a#nav-link-home').simulate('click', { button: 0 });
 	wrapped.update();
 	expect(wrapped.find(CommentList).length).toEqual(1);
