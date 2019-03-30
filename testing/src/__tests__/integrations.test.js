@@ -1,18 +1,21 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import { Provider } from 'react-redux';
+import { Router } from 'react-router-dom';
+import { createBrowserHistory } from 'history';
 import moxios from 'moxios';
 import Root from 'Root';
 import App from 'components/App';
-import { push } from 'connected-react-router';
 
 let originalTimeout;
 let wrapped;
-let options;
+let history;
 
+//TODO: use Router from react router and create history and dispatch actions.
+//TODO: Branch and revert last commit, try history push for navitgation
 beforeEach(() => {
-	originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
-	jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
+	// originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
+	// jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
 	moxios.install();
 	moxios.stubRequest('http://jsonplaceholder.typicode.com/comments', {
 		status: 200,
@@ -25,30 +28,23 @@ beforeEach(() => {
 			}
 		]
 	});
+	history = createBrowserHistory();
 	wrapped = mount(
 		<Root
 			initialState={{
 				auth: true,
-				router: {
-					location: {
-						pathname: '/',
-						search: '',
-						hash: '',
-						state: undefined,
-						key: 'st0b6u'
-					},
-					action: 'PUSH'
-				},
 				comments: []
 			}}
 		>
-			<App />
+			<Router history={history}>
+				<App />
+			</Router>
 		</Root>
 	);
 });
 
 afterEach(() => {
-	jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
+	// jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
 	moxios.uninstall();
 });
 
@@ -60,11 +56,7 @@ const wrappedDispatch = action =>
 
 it('should fetch a list of comments and display them succesfully', done => {
 	console.log(wrapped.html());
-	// we need to sign in first
-	//wrapped.find('.sign-in').simulate('click');
-	// navigate to comment listv
-	//wrapped.find('a#nav-link-post').simulate('click');
-	wrappedDispatch(push('/post'));
+	history.push('/post');
 	wrapped.update();
 	console.log(wrapped.html());
 
@@ -73,7 +65,7 @@ it('should fetch a list of comments and display them succesfully', done => {
 		wrapped.find('a#nav-link-home').simulate('click');
 		wrapped.update();
 		console.log(wrapped.html());
-		wrappedDispatch(push('/'));
+		history.push('/');
 		wrapped.update();
 		console.log(wrapped.html());
 		expect(wrapped.find('li.comments').length).toEqual(2);

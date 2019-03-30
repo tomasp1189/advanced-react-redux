@@ -1,5 +1,6 @@
 import React from 'react';
 import { mount } from 'enzyme';
+import { MemoryRouter } from 'react-router-dom';
 import Root from 'Root';
 import CommentList from 'components/CommentList';
 
@@ -7,11 +8,14 @@ let wrapped;
 
 beforeEach(() => {
 	const initialState = {
+		auth: true,
 		comments: ['Initial Comment #1', 'Initial Comment #2']
 	};
 	wrapped = mount(
 		<Root initialState={initialState}>
-			<CommentList />
+			<MemoryRouter>
+				<CommentList />
+			</MemoryRouter>
 		</Root>
 	);
 });

@@ -1,20 +1,15 @@
 // configureStore.js
-
-import { createBrowserHistory } from 'history';
 import { applyMiddleware, compose, createStore } from 'redux';
-import { routerMiddleware } from 'connected-react-router';
 import logger from 'redux-logger';
 import async from 'middlewares/async';
 import stateValidator from 'middlewares/stateValidator';
-import createRootReducer from 'reducers';
-
-export const history = createBrowserHistory();
+import reducers from 'reducers';
 
 export default function configureStore(preloadedState, shouldLog) {
-	const middleware = [async, stateValidator, routerMiddleware(history)];
+	const middleware = [async, stateValidator];
 	shouldLog && middleware.push(logger);
 	const store = createStore(
-		createRootReducer(history), // root reducer with router state
+		reducers,
 		preloadedState,
 		compose(applyMiddleware(...middleware))
 	);
